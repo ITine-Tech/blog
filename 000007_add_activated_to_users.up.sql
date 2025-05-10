@@ -1,0 +1,2 @@
+ALTER TABLE users
+ADD column is_active BOOLEAN NOT NULL DEFAULT FALSE;
