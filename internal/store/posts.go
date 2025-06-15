@@ -56,7 +56,6 @@ func (s *PostsPostgreStore) CreatePost(ctx context.Context, post *Post) error {
 }
 
 func (s *PostsPostgreStore) GetAllPosts(ctx context.Context) ([]*Post, error) {
-	//I'm not using the context here
 	rows, err := s.db.Query(`SELECT * FROM posts`)
 	if err != nil {
 		return nil, err
@@ -118,7 +117,7 @@ func (s *PostsPostgreStore) GetPostByID(ctx context.Context, id int64) (*Post, e
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
 			return nil, ErrNotFound
-		default:
+		default:	
 			return nil, err
 		}
 	}

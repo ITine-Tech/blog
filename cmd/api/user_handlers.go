@@ -2,7 +2,7 @@ package main
 
 import (
 	_ "berta2/docs"
-	"berta2/store"
+	"berta2/internal/store"
 	"context"
 	"errors"
 	"github.com/go-chi/chi/v5"

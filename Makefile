@@ -29,12 +29,12 @@ migrate-down:
 
 .PHONY: gen-docs
 gen-docs:
-	@swag init -g ./cmd/main/main.go
+	@swag init -g ./main/main.go
 
 .PHONY: run-docs
 run-docs:
-	@swag init -g ./cmd/main/main.go
-	@go run ./cmd/main .
+	@swag init -g ./main/main.go
+	@go run ./main .
 
 .PHONY: test
 test:

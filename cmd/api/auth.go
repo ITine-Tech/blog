@@ -1,7 +1,7 @@
 package main
 
 import (
-	"berta2/store"
+	"berta2/internal/store"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"

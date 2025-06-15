@@ -1,13 +1,14 @@
 package main
 
 import (
-	"berta2/auth"
-	"berta2/docs"
-	store2 "berta2/store"
 	"fmt"
-	httpSwagger "github.com/swaggo/http-swagger"
 	"net/http"
 	"time"
+
+	"berta2/internal/auth"
+	"berta2/docs"
+	store2 "berta2/internal/store"
+	httpSwagger "github.com/swaggo/http-swagger"
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"

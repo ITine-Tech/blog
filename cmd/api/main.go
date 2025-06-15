@@ -1,13 +1,16 @@
 package main
 
 import (
-	"berta2/auth"
-	_ "berta2/docs"
-	"berta2/store"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
 	"time"
+
+	"berta2/internal/auth"
+	"berta2/internal/db"
+	_ "berta2/docs"
+	"berta2/internal/store"
+
+	"github.com/joho/godotenv"
 )
 
 const version = "0.0.1"
@@ -54,7 +57,7 @@ func main() {
 		},
 	}
 
-	db, err := NewDB(
+	db, err := db.NewDB(
 		cfg.db.addr,
 		cfg.db.maxOpenConns,
 		cfg.db.maxIdleConns,

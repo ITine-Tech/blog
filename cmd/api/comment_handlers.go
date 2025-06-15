@@ -1,7 +1,7 @@
 package main
 
 import (
-	"berta2/store"
+	"berta2/internal/store"
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"net/http"

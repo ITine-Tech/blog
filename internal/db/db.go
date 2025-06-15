@@ -1,4 +1,4 @@
-package main
+package db
 
 //this needs to be a package db later on and put into an internal folder
 
