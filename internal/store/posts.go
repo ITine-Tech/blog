@@ -1,7 +1,5 @@
 package store
 
-//database handling
-
 import (
 	"context"
 	"database/sql"
@@ -9,7 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/lib/pq" //Database driver for Postgres
+	"github.com/lib/pq"
 )
 
 type Post struct {
@@ -38,13 +36,13 @@ func (s *PostsPostgreStore) CreatePost(ctx context.Context, post *Post) error {
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	err := s.db.QueryRowContext(
-		ctx, //What does this context do?
+		ctx,
 		query,
 		post.Title,
 		post.Text,
 		post.UserID,
 		pq.Array(post.Tags),
-	).Scan( //this Scan part is used for the automatically generated data types
+	).Scan(
 		&post.ID,
 		&post.CreatedAt,
 		&post.UpdatedAt,
@@ -163,7 +161,6 @@ DELETE FROM posts WHERE id = $1
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	//This is Ecec because I don't want to return anything
 	res, err := s.db.ExecContext(ctx, query, PostId)
 	if err != nil {
 		return err

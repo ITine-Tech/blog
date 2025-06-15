@@ -14,7 +14,6 @@ var (
 	ErrNotFound = errors.New("record not found")
 )
 
-// Posts there are multiple interfaces in this struct that all have to do with the DB
 type Posts interface {
 	CreatePost(context.Context, *Post) error
 	GetAllPosts(context.Context) ([]*Post, error)
@@ -43,7 +42,6 @@ type Comments interface {
 	CreateComment(context.Context, *Comment) error
 }
 
-// Storage Define the Storage struct with the interfaces
 type Storage struct {
 	Posts    Posts
 	Users    Users
@@ -51,7 +49,6 @@ type Storage struct {
 	Roles    Roles
 }
 
-// NewPostgresStorage PostgresStorage is the constructor to make a concrete implementation of the Storage interface
 func NewPostgresStorage(db *sql.DB) Storage {
 	return Storage{
 		Posts:    &PostsPostgreStore{db},

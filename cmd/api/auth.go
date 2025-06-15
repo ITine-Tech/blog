@@ -47,7 +47,6 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		app.badRequestResponse(w, r, err)
 	}
 
-	//Validating input
 	if userPayload.Username == "" || userPayload.Email == "" || userPayload.Password == "" {
 		app.badRequestResponse(w, r, fmt.Errorf("username, email, and password are required"))
 		return
@@ -61,7 +60,6 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		},
 	}
 
-	//Hash the password
 	if err := user.Password.Set(userPayload.Password); err != nil {
 		app.internalServerError(w, r, err)
 		return
@@ -71,7 +69,6 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 
 	newToken := uuid.New().String()
 
-	//store the token in db
 	hash := sha256.Sum256([]byte(newToken))
 	hashToken := hex.EncodeToString(hash[:])
 
@@ -88,7 +85,7 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	//send e-mail to user here
+	//send e-mail to user with activation link
 	//The struct here is used to send payload so token can be used in Bruno
 	userWithToken := UserWithToken{
 		User:  user,
@@ -114,19 +111,17 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 // @Failure 500 {object}	error "Internal Server Error"
 // @Router /authentication/token [post]
 func (app *application) createTokenHandler(w http.ResponseWriter, r *http.Request) {
-	//parse payload credentials
 	var userPayload CreateUserTokenPayload
 	if err := readJSON(w, r, &userPayload); err != nil {
 		app.badRequestResponse(w, r, err)
 		return
 	}
-	//Validating input
+
 	if userPayload.Username == "" || userPayload.Password == "" {
 		app.badRequestResponse(w, r, fmt.Errorf("username and password are required"))
 		return
 	}
 
-	//fetch the user (check if user exists) from the payload
 	user, err := app.store.Users.GetUserByUsername(r.Context(), userPayload.Username)
 	if err != nil {
 		switch err {
@@ -143,12 +138,11 @@ func (app *application) createTokenHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	//generate the token --> add claims
 	claims := jwt.MapClaims{
-		"sub": user.ID, //subject
+		"sub": user.ID, 
 		"exp": time.Now().Add(app.config.auth.token.expiry).Unix(),
-		"iat": time.Now().Unix(), //Issued at
-		"nbf": time.Now().Unix(), //Not before
+		"iat": time.Now().Unix(), 
+		"nbf": time.Now().Unix(),
 		"iss": app.config.auth.token.issuer,
 		"aud": app.config.auth.token.audience,
 	}
@@ -157,7 +151,6 @@ func (app *application) createTokenHandler(w http.ResponseWriter, r *http.Reques
 		app.internalServerError(w, r, err)
 		return
 	}
-	//send it to the client
 
 	if err := app.jsonResponse(w, http.StatusCreated, token); err != nil {
 		app.internalServerError(w, r, err)

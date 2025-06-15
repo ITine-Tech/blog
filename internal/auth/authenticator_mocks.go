@@ -11,7 +11,7 @@ type TestAuthenticator struct{}
 const secret = "test"
 
 var testClaims = jwt.MapClaims{
-	"sub": "65ea315e-ca1c-4af8-956b-57ed94378e94", //subject
+	"sub": "65ea315e-ca1c-4af8-956b-57ed94378e94",
 	"exp": time.Now().Add(time.Hour).Unix(),
 	"iss": "test-iss",
 	"aud": "test-aud",

@@ -1,3 +1,6 @@
+run:
+    go run ./cmd/api
+
 build:
 	go build ./cmd/api -o bin/blog
 
@@ -25,11 +28,10 @@ migrate-down args:
 	migrate -path={{MIGRATIONS_PATH}} -database="postgres://postgres:mypassword@localhost/myblog?sslmode=disable" down {{args}}
 
 gen-docs:
-	swag init -g "./cmd/api/main.go"
+	go tool swag init -g "./cmd/api/main.go"
 
 run-docs:
 	go tool swag init -g "./cmd/api/main.go"
 	go run ./cmd/api/.
 
-run:
-    go run ./cmd/api
+

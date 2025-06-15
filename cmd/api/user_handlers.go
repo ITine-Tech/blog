@@ -18,7 +18,6 @@ const userCTx userKey = "userID"
 type UpdateUserPayload struct {
 	Username *string `json:"username" //validate:"omitempty,max=100"`
 	Email    *string `json:"email" //validate:"omitempty,max=100"`
-	//Password *string `json:"password" //validate:"omitempty"`
 }
 
 // ActivateUser godoc
@@ -46,6 +45,7 @@ func (app *application) activateUserHandler(w http.ResponseWriter, r *http.Reque
 		}
 		return
 	}
+
 	if err := app.jsonResponse(w, http.StatusNoContent, "User activated"); err != nil {
 		app.internalServerError(w, r, err)
 	}
@@ -74,6 +74,7 @@ func (app *application) getUsersHandler(w http.ResponseWriter, r *http.Request) 
 			return
 		}
 	}
+
 	if err := app.jsonResponse(w, http.StatusOK, users); err != nil {
 		app.internalServerError(w, r, err)
 	}
@@ -153,7 +154,6 @@ func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request
 		app.internalServerError(w, r, err)
 		return
 	}
-
 }
 
 // DeleteUser godoc
@@ -211,7 +211,6 @@ func (app *application) userContextMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-// This function makes it easier to get the context
 func getUserFromCtx(r *http.Request) *store.User {
 	user, _ := r.Context().Value(userCTx).(*store.User)
 	return user

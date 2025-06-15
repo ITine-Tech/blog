@@ -45,7 +45,6 @@ type tokenConfig struct {
 	audience string
 }
 
-// this is in a struct so it is not hardcoded, and can be changed easily
 type dbConfig struct {
 	addr         string
 	maxOpenConns int
@@ -57,26 +56,19 @@ type mailConfig struct {
 	exp time.Duration
 }
 
-// This function sets up the ServeMux outside the run() method. This is better to use with testing purposes.
-// mount sets up the HTTP request multiplexer (ServeMux) and returns it as an http.Handler.
-// This function is responsible for defining the routes and middleware for the application.
+// mount sets up the HTTP router and middleware for the application.
 func (app *application) mount() http.Handler {
 
 	r := chi.NewRouter()
 
-	// A good base middleware stack:
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
-	// Recover from panics
+	
 	r.Use(middleware.Recoverer)
 
-	// Set a timeout value on the request context (ctx), that will signal
-	// through ctx.Done() that the request has timed out and further
-	// processing should be stopped.
 	r.Use(middleware.Timeout(60 * time.Second))
 
-	// This makes the nice logging in the terminal
 	r.Use(middleware.Logger)
 
 	// Apply basic authentication middleware to the /healthcheck route
@@ -86,11 +78,9 @@ func (app *application) mount() http.Handler {
 	r.Get("/swagger/*", httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:3000/swagger/doc.json")))
 
-	// Define routes for retrieving and listing posts
 	r.Get("/feed", app.getAllPostsHandler)
 	r.Get("/feed/{postID}", app.getPostByIDHandler)
 
-	// Define routes for managing posts
 	r.Route("/posts", func(r chi.Router) {
 		r.Use(app.AuthTokenMiddleware)
 		r.Post("/", app.CreatePostsHandler)
@@ -102,16 +92,13 @@ func (app *application) mount() http.Handler {
 		})
 	})
 
-	// Define routes for user authentication
 	r.Route("/authentication", func(r chi.Router) {
 		r.Post("/user", app.registerUserHandler)
 		r.Post("/token", app.createTokenHandler)
 	})
 
-	// Define route for activating user accounts
 	r.Put("/users/activate/{token}", app.activateUserHandler)
 
-	// Define routes for managing users
 	r.Route("/users", func(r chi.Router) {
 		r.Use(app.AuthTokenMiddleware)
 		r.Get("/", app.getUsersHandler)
@@ -135,21 +122,15 @@ func (app *application) mount() http.Handler {
 // Returns:
 // - An error if the server fails to start listening for connections.
 func (app *application) run(mux http.Handler) error {
-	// Docs: defining the Swagger doc variables dynamically
 	docs.SwaggerInfo.Version = version
 	docs.SwaggerInfo.Host = app.config.apiURL
 	docs.SwaggerInfo.BasePath = "/"
 
-	// mux := http.NewServeMux() --> moved to the mount() method
-
 	server := &http.Server{
 		Addr:    app.config.addr,
 		Handler: mux,
-
-		// This should always be added for server shutdown:
 		WriteTimeout: time.Second * 30,
 		ReadTimeout:  time.Second * 10,
-		// Idle connections will be closed after this duration.
 		IdleTimeout: time.Minute,
 	}
 

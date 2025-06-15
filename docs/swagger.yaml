@@ -153,14 +153,14 @@ definitions:
     type: object
 info:
   contact:
-    email: christine.gundel@mail.schwarz
+    email: frau.gundi@outlook.com
     name: Christine Gundel
-  description: API for Berta's blog
+  description: API for a blog
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
-  title: Berta's Beautiful Blog
+  title: Beautiful Blog
 paths:
   /authentication/token:
     post:

@@ -1,12 +1,12 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "API for Berta's blog",
-        "title": "Berta's Beautiful Blog",
+        "description": "API for a blog",
+        "title": "Beautiful Blog",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "Christine Gundel",
-            "email": "christine.gundel@mail.schwarz"
+            "email": "frau.gundi@outlook.com"
         },
         "license": {
             "name": "Apache 2.0",

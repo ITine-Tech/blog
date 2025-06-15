@@ -12,7 +12,7 @@ const docTemplate = `{
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "Christine Gundel",
-            "email": "christine.gundel@mail.schwarz"
+            "email": "frau.gundi@outlook.com"
         },
         "license": {
             "name": "Apache 2.0",
@@ -845,8 +845,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "Berta's Beautiful Blog",
-	Description:      "API for Berta's blog",
+	Title:            "Beautiful Blog",
+	Description:      "API for a blog",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

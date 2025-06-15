@@ -20,7 +20,7 @@ func newTestApplication(t *testing.T) *application {
 	t.Helper()
 
 	mockStore := store.NewMockStore()
-	testAuth := &auth.TestAuthenticator{} // Mock authentication for testing purposes
+	testAuth := &auth.TestAuthenticator{}
 
 	return &application{
 		store:         mockStore,

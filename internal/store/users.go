@@ -22,7 +22,7 @@ type User struct {
 	ID        uuid.UUID `json:"id"`
 	Username  string    `json:"username"`
 	Email     string    `json:"email"`
-	Password  password  `json:"-"` //Don't return passwords in JSON responses
+	Password  password  `json:"-"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	IsActive  bool      `json:"is_active"`
@@ -57,10 +57,10 @@ type UsersPostgresStore struct {
 
 func (s *UsersPostgresStore) Create(ctx context.Context, tx *sql.Tx, user *User) error {
 	query := `
-	INSERT INTO users (username, email, password, role_id)
-	VALUES ($1, $2, $3, (SELECT id FROM roles WHERE name = $4))
-	RETURNING id, created_at, updated_at
-	`
+		INSERT INTO users (username, email, password, role_id)
+		VALUES ($1, $2, $3, (SELECT id FROM roles WHERE name = $4))
+		RETURNING id, created_at, updated_at
+		`
 
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
@@ -105,12 +105,11 @@ func (s *UsersPostgresStore) Create(ctx context.Context, tx *sql.Tx, user *User)
 //
 // Returns an error if the operation fails, or nil if successful.
 func (s *UsersPostgresStore) CreateAndInvite(ctx context.Context, user *User, token string, invitationExp time.Duration) error {
-	// If something fails, the user will be deleted
 	return withTx(s.db, ctx, func(tx *sql.Tx) error {
 		if err := s.Create(ctx, tx, user); err != nil {
 			return err
 		}
-		// Create the user invite
+
 		err := s.createUserInvitation(ctx, tx, token, invitationExp, user.ID)
 		if err != nil {
 			return err
@@ -190,7 +189,6 @@ func (s *UsersPostgresStore) GetUserByID(ctx context.Context, id uuid.UUID) (*Us
 		JOIN roles ON (users.role_id = roles.id)
 		WHERE users.id = $1
 		`
-	//user active
 
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
@@ -325,7 +323,7 @@ func (s *UsersPostgresStore) getUserFromInvitation(ctx context.Context, tx *sql.
 		JOIN user_invitations ui ON u.id = ui.id
 		WHERE ui.token = $1 and ui.expiry > $2
 		`
-	//Token is stored as hash in DB, is sent in plain text by user, hence, encoding is needed
+	
 	hash := sha256.Sum256([]byte(token))
 	hashToken := hex.EncodeToString(hash[:])
 
@@ -353,9 +351,9 @@ func (s *UsersPostgresStore) getUserFromInvitation(ctx context.Context, tx *sql.
 // Updates the user to being active after e-mail
 func (s *UsersPostgresStore) update(ctx context.Context, tx *sql.Tx, user *User) error {
 	query := `
-UPDATE users SET username = $1, email = $2, is_active = $3
-WHERE id = $4
-`
+		UPDATE users SET username = $1, email = $2, is_active = $3
+		WHERE id = $4
+		`
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
@@ -369,7 +367,8 @@ WHERE id = $4
 
 func (s *UsersPostgresStore) deleteUserInvitation(ctx context.Context, tx *sql.Tx, id uuid.UUID) error {
 	query := `
-DELETE FROM user_invitations WHERE id = $1`
+		DELETE FROM user_invitations WHERE id = $1
+		`
 
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()

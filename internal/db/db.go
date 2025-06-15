@@ -1,14 +1,11 @@
 package db
 
-//this needs to be a package db later on and put into an internal folder
-
 import (
 	"context"
 	"database/sql"
 	"time"
 )
 
-// Internal packages should not know about the external world. That is why the DBconfig struct is not used here
 func NewDB(addr string, maxOpenConns, maxIdleConns int, maxIdleTime string) (*sql.DB, error) {
 	db, err := sql.Open("postgres", addr)
 	if err != nil {

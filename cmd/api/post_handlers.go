@@ -23,9 +23,6 @@ type CreatePost struct {
 	Tags  []string `json:"tags"`
 }
 
-// The data types need to be pointers in order to really update.
-// If there wasn't a pointer, it wouldn't be possible to update the text to an empty string,
-// because that would be interpreted as no changes
 type UpdatePostPayload struct {
 	Title *string `json:"title" //validate:"omitempty,max=100"`
 	Text  *string `json:"text" //validate:"omitempty,max=1000"`
@@ -50,7 +47,6 @@ func (app *application) CreatePostsHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	//Validating input
 	if postPayload.Title == "" || postPayload.Text == "" || len(postPayload.Tags) == 0 {
 		app.badRequestResponse(w, r, fmt.Errorf("title, text, and tags are required"))
 		return
@@ -72,7 +68,6 @@ func (app *application) CreatePostsHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	//if err := writeJSON(w, http.StatusCreated, post); err != nil { this was replaced for better JSON Response:
 	if err := app.jsonResponse(w, http.StatusCreated, post); err != nil {
 		app.badRequestResponse(w, r, err)
 	}
@@ -95,7 +90,6 @@ func (app *application) getAllPostsHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	//if err := writeJSON(w, http.StatusOK, posts); err != nil {
 	if err := app.jsonResponse(w, http.StatusOK, posts); err != nil {
 
 		app.internalServerError(w, r, err)
@@ -143,7 +137,6 @@ func (app *application) getPostByIDHandler(w http.ResponseWriter, r *http.Reques
 
 	post.Comments = comments
 
-	//if err := writeJSON(w, http.StatusOK, post); err != nil { -->updated for better response pattern
 	if err := app.jsonResponse(w, http.StatusOK, post); err != nil {
 		app.internalServerError(w, r, err)
 		return
@@ -173,10 +166,6 @@ func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	//Managing concurrency: Be aware of data race (two people updating one post at the exact same time,
-	//leading to unforseeable behavior in the DB because of miliseconds time difference)
-	//That's why versioning is important! --> Optimistic concurrency control
-
 	if payload.Title != nil {
 		post.Title = *payload.Title
 	}
@@ -189,7 +178,6 @@ func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	//if err := writeJSON(w, http.StatusOK, post); err != nil {
 	if err := app.jsonResponse(w, http.StatusOK, post); err != nil {
 		app.internalServerError(w, r, err)
 		return
@@ -259,7 +247,6 @@ func (app *application) PostsContextMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-// This function makes it easier to get the context
 func getPostFromCtx(r *http.Request) *store.Post {
 	post, _ := r.Context().Value(postCtx).(*store.Post)
 	return post

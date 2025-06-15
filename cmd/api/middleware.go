@@ -15,21 +15,18 @@ import (
 func (app *application) basicAuthMiddleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			//Read the auth header
 			authHeader := r.Header.Get("Authorization")
 			if authHeader == "" {
 				app.unauthorizedBasicErrorResponse(w, r, errors.New("missing Authorization header"))
 				return
 			}
 
-			//parse it --> get base 64
 			parts := strings.SplitN(authHeader, " ", 2)
 			if len(parts) != 2 || parts[0] != "Basic" {
 				app.unauthorizedBasicErrorResponse(w, r, errors.New("invalid Authorization header"))
 				return
 			}
 
-			//decode it
 			decoded, err := base64.StdEncoding.DecodeString(parts[1])
 			if err != nil {
 				app.unauthorizedBasicErrorResponse(w, r, errors.New("invalid Authorization header"))
@@ -37,11 +34,10 @@ func (app *application) basicAuthMiddleware() func(http.Handler) http.Handler {
 			}
 
 			username := app.config.auth.basic.username
-			pass := app.config.auth.basic.pass
+			password := app.config.auth.basic.pass
 
-			//check credentials
 			credentials := strings.SplitN(string(decoded), ":", 2)
-			if len(credentials) != 2 || credentials[0] != username || credentials[1] != pass {
+			if len(credentials) != 2 || credentials[0] != username || credentials[1] != password {
 				app.unauthorizedResponse(w, r, errors.New("invalid Authorization header"))
 				return
 			}
@@ -58,7 +54,7 @@ func (app *application) AuthTokenMiddleware(next http.Handler) http.Handler {
 			app.unauthorizedResponse(w, r, errors.New("missing Authorization header"))
 			return
 		}
-		parts := strings.SplitN(authHeader, " ", 2) //authorization: Bearer <token>
+		parts := strings.SplitN(authHeader, " ", 2)
 		if len(parts) != 2 || parts[0] != "Bearer" {
 			app.unauthorizedResponse(w, r, errors.New("invalid Authorization header"))
 			return
@@ -73,7 +69,7 @@ func (app *application) AuthTokenMiddleware(next http.Handler) http.Handler {
 		}
 
 		claims, _ := jwtToken.Claims.(jwt.MapClaims)
-
+		
 		userID, err := uuid.Parse(claims["sub"].(string))
 		if err != nil {
 			app.unauthorizedResponse(w, r, err)
@@ -96,7 +92,6 @@ func (app *application) checkPostOwnership(requiredRole string, next http.Handle
 		user := getUserFromCtx(r)
 		post := getPostFromCtx(r)
 
-		//if the post is the user's post
 		if post.UserID == user.ID {
 			next.ServeHTTP(w, r)
 			return
@@ -118,43 +113,11 @@ func (app *application) checkPostOwnership(requiredRole string, next http.Handle
 
 }
 
-// Doesn't work yet: How can I get the user from the authentication?
-/*func (app *application) checkUserOwnership(requiredRole string, next http.HandlerFunc) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		user := getUserFromCtx(r) //gets the user from the Auth
-
-		userIDfromURL := chi.URLParam(r, "userID")
-		userID, err := uuid.Parse(userIDfromURL)
-		if err != nil {
-			app.internalServerError(w, r, err)
-			return
-		}
-
-		if user.ID == userID {
-			next.ServeHTTP(w, r)
-			return
-		}
-
-		allowedRole, err := app.checkRolePrecedence(r.Context(), user, requiredRole)
-		if err != nil {
-			app.internalServerError(w, r, err)
-			return
-		}
-
-		if !allowedRole {
-			app.forbiddenResponse(w, r, err)
-			return
-		}
-		next.ServeHTTP(w, r)
-
-	})
-}
-*/
 func (app *application) checkRolePrecedence(ctx context.Context, user *store.User, roleName string) (bool, error) {
 	role, err := app.store.Roles.GetByName(ctx, roleName)
 	if err != nil {
 		return false, err
 	}
-	// role level is higher
+
 	return user.Role.Level >= role.Level, nil
 }

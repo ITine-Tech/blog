@@ -18,9 +18,10 @@ type RolePostgreStore struct {
 
 func (s *RolePostgreStore) GetByName(ctx context.Context, slug string) (*Role, error) {
 	query := `
-SELECT id, name, level, description
-FROM roles
-WHERE name = $1`
+		SELECT id, name, level, description
+		FROM roles
+		WHERE name = $1
+		`
 
 	role := new(Role)
 	err := s.db.QueryRowContext(ctx, query, slug).Scan(

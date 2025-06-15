@@ -15,12 +15,12 @@ import (
 
 const version = "0.0.1"
 
-//	@title			Berta's Beautiful Blog
-//	@description	API for Berta's blog
+//	@title			Beautiful Blog
+//	@description	API for a blog
 //	@termsOfService	http://swagger.io/terms/
 
 //	@contact.name	Christine Gundel
-//	@contact.email	christine.gundel@mail.schwarz
+//	@contact.email	frau.gundi@outlook.com
 
 // @license.name				Apache 2.0
 // @license.url				http://www.apache.org/licenses/LICENSE-2.0.html
@@ -40,12 +40,12 @@ func main() {
 		apiURL: os.Getenv("API_URL"),
 		db: dbConfig{
 			addr:         os.Getenv("DB_CONN_STRING"),
-			maxOpenConns: 30, //This can all be done in the ENV (Chapter 19, 3:35)
+			maxOpenConns: 30,
 			maxIdleConns: 30,
 			maxIdleTime:  "15m",
 		},
 		mail: mailConfig{
-			exp: time.Hour * 24 * 3, // 3 days to accept invitation
+			exp: time.Hour * 24 * 3,
 		},
 		auth: authConfig{
 			basic: basicConfig{

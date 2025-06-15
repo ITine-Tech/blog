@@ -41,7 +41,6 @@ func (app *application) CreateCommentsHandler(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	//Validating input
 	if commentsPayload.Content == "" {
 		app.badRequestResponse(w, r, fmt.Errorf("some text is required"))
 		return
