@@ -21,11 +21,6 @@ func Test_application_routes(t *testing.T) {
 		{name: "Authenticate user", route: "/authentication/user", expectedMethod: "POST"},
 		{name: "Authentication token", route: "/authentication/token", expectedMethod: "POST"},
 		{name: "Activation of user accounts", route: "/users/activate/{token}", expectedMethod: "PUT"},
-
-		/*{name: "Swagger", route: "swagger/*", expectedMethod: "GET"},*/
-		/*{name: "Create comment", route: "/posts/{postID}/comments", expectedMethod: "POST"},*/
-		/*{name: "Get all users", route: "/users", expectedMethod: "GET"},
-		{name: "Get user by ID", route: "/users/{userID}", expectedMethod: "GET"},*/
 	}
 
 	var app application

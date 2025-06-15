@@ -44,7 +44,7 @@ Replace password and database name.
 
 ## API Documentation (Swagger)
 
-This project uses **Swagger** for interactive API documentation.
+This project uses Swagger for interactive API documentation.
 
 Once the application is running, you can access the Swagger UI at:
 

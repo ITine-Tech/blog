@@ -18,7 +18,7 @@ func Test_basicAuthMiddleware(t *testing.T) {
 	tests := []struct {
 		name            string
 		username        string
-		pass            string
+		password        string
 		expectedStatus  int
 		expectedError   error
 		requestMethod   string
@@ -28,7 +28,7 @@ func Test_basicAuthMiddleware(t *testing.T) {
 		{
 			name:            "valid Authorization header, correct user data",
 			username:        app.config.auth.basic.username,
-			pass:            app.config.auth.basic.pass,
+			password:        app.config.auth.basic.pass,
 			expectedStatus:  http.StatusOK,
 			expectedError:   nil,
 			requestMethod:   http.MethodGet,
@@ -38,7 +38,7 @@ func Test_basicAuthMiddleware(t *testing.T) {
 		{
 			name:            "missing Authorization header",
 			username:        "",
-			pass:            "",
+			password:        "",
 			expectedStatus:  http.StatusUnauthorized,
 			expectedError:   errors.New("missing Authorization header"),
 			requestMethod:   http.MethodGet,
@@ -47,7 +47,7 @@ func Test_basicAuthMiddleware(t *testing.T) {
 		{
 			name:            "invalid Authorization header format",
 			username:        "",
-			pass:            "",
+			password:        "",
 			expectedStatus:  http.StatusUnauthorized,
 			expectedError:   errors.New("invalid Authorization header"),
 			requestMethod:   http.MethodGet,
@@ -57,7 +57,7 @@ func Test_basicAuthMiddleware(t *testing.T) {
 		{
 			name:            "incorrect username",
 			username:        "incorrect_username",
-			pass:            app.config.auth.basic.pass,
+			password:        app.config.auth.basic.pass,
 			expectedStatus:  http.StatusUnauthorized,
 			expectedError:   errors.New("invalid Authorization header"),
 			requestMethod:   http.MethodGet,
@@ -66,7 +66,7 @@ func Test_basicAuthMiddleware(t *testing.T) {
 		{
 			name:            "incorrect password",
 			username:        app.config.auth.basic.username,
-			pass:            "invalid_password",
+			password:        "invalid_password",
 			expectedStatus:  http.StatusUnauthorized,
 			expectedError:   errors.New("invalid Authorization header"),
 			requestMethod:   http.MethodGet,
@@ -80,8 +80,8 @@ func Test_basicAuthMiddleware(t *testing.T) {
 			defer testServer.Close()
 
 			authHeader := ""
-			if tt.username != "" && tt.pass != "" {
-				authHeader = "Basic " + base64.StdEncoding.EncodeToString([]byte(tt.username+":"+tt.pass))
+			if tt.username != "" && tt.password != "" {
+				authHeader = "Basic " + base64.StdEncoding.EncodeToString([]byte(tt.username+":"+tt.password))
 			} else if tt.authHeader != "" {
 				authHeader = tt.authHeader
 			}
