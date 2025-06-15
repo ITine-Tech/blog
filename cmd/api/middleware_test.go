@@ -3,11 +3,12 @@ package main
 import (
 	"encoding/base64"
 	"errors"
-	"github.com/golang-jwt/jwt/v5"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func Test_basicAuthMiddleware(t *testing.T) {

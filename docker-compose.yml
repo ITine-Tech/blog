@@ -4,6 +4,6 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: mypassword
-      POSTGRES_DB: berta
+      POSTGRES_DB: myblog
     ports:
       - "5432:5432" 

@@ -6,10 +6,16 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"errors"
-	"golang.org/x/crypto/bcrypt"
 	"time"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/google/uuid"
+)
+
+var (
+	ErrDuplicateEmail    = errors.New("a user with this email already exists")
+	ErrDuplicateUsername = errors.New("a user with this username already exists")
 )
 
 type User struct {
@@ -28,11 +34,6 @@ type password struct {
 	text *string
 	hash []byte
 }
-
-var (
-	ErrDuplicateEmail    = errors.New("a user with this email already exists")
-	ErrDuplicateUsername = errors.New("a user with this username already exists")
-)
 
 func (p *password) Set(password string) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -104,19 +105,19 @@ func (s *UsersPostgresStore) Create(ctx context.Context, tx *sql.Tx, user *User)
 //
 // Returns an error if the operation fails, or nil if successful.
 func (s *UsersPostgresStore) CreateAndInvite(ctx context.Context, user *User, token string, invitationExp time.Duration) error {
-    // If something fails, the user will be deleted
-    return withTx(s.db, ctx, func(tx *sql.Tx) error {
-        if err := s.Create(ctx, tx, user); err != nil {
-            return err
-        }
-        // Create the user invite
-        err := s.createUserInvitation(ctx, tx, token, invitationExp, user.ID)
-        if err != nil {
-            return err
-        }
+	// If something fails, the user will be deleted
+	return withTx(s.db, ctx, func(tx *sql.Tx) error {
+		if err := s.Create(ctx, tx, user); err != nil {
+			return err
+		}
+		// Create the user invite
+		err := s.createUserInvitation(ctx, tx, token, invitationExp, user.ID)
+		if err != nil {
+			return err
+		}
 
-        return nil
-    })
+		return nil
+	})
 }
 
 // Activate activates a user account using an invitation token.
@@ -128,23 +129,23 @@ func (s *UsersPostgresStore) CreateAndInvite(ctx context.Context, user *User, to
 //
 // Returns an error if the operation fails, or nil if successful.
 func (s *UsersPostgresStore) Activate(ctx context.Context, token string) error {
-    // Video 45 7:50
-    return withTx(s.db, ctx, func(tx *sql.Tx) error {
-        user, err := s.getUserFromInvitation(ctx, tx, token)
-        if err != nil {
-            return err
-        }
-        user.IsActive = true
+	// Video 45 7:50
+	return withTx(s.db, ctx, func(tx *sql.Tx) error {
+		user, err := s.getUserFromInvitation(ctx, tx, token)
+		if err != nil {
+			return err
+		}
+		user.IsActive = true
 
-        if err := s.update(ctx, tx, user); err != nil {
-            return err
-        }
+		if err := s.update(ctx, tx, user); err != nil {
+			return err
+		}
 
-        if err := s.deleteUserInvitation(ctx, tx, user.ID); err != nil {
-            return err
-        }
-        return nil
-    })
+		if err := s.deleteUserInvitation(ctx, tx, user.ID); err != nil {
+			return err
+		}
+		return nil
+	})
 }
 
 func (s *UsersPostgresStore) GetAllUsers(ctx context.Context) ([]*User, error) {
@@ -184,11 +185,11 @@ func (s *UsersPostgresStore) GetAllUsers(ctx context.Context) ([]*User, error) {
 
 func (s *UsersPostgresStore) GetUserByID(ctx context.Context, id uuid.UUID) (*User, error) {
 	query := `
-	SELECT users.id, username, email, password, created_at, updated_at, is_active, roles.id, roles.name, roles.level, roles.description
-	FROM users
-	JOIN roles ON (users.role_id = roles.id)
-	WHERE users.id = $1
-	`
+		SELECT users.id, username, email, password, created_at, updated_at, is_active, roles.id, roles.name, roles.level, roles.description
+		FROM users
+		JOIN roles ON (users.role_id = roles.id)
+		WHERE users.id = $1
+		`
 	//user active
 
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
@@ -225,10 +226,10 @@ func (s *UsersPostgresStore) GetUserByID(ctx context.Context, id uuid.UUID) (*Us
 
 func (s *UsersPostgresStore) GetUserByUsername(ctx context.Context, username string) (*User, error) {
 	query := `
-SELECT id, username, email, password, created_at, updated_at 
-FROM users
-WHERE username = $1 AND is_active = true
-`
+		SELECT id, username, email, password, created_at, updated_at 
+		FROM users
+		WHERE username = $1 AND is_active = true
+		`
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
@@ -283,8 +284,8 @@ func (s *UsersPostgresStore) UpdateUser(ctx context.Context, user *User) error {
 
 func (s *UsersPostgresStore) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	query := `
-	DELETE FROM users WHERE id = $1
-	`
+		DELETE FROM users WHERE id = $1
+		`
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
@@ -304,9 +305,9 @@ func (s *UsersPostgresStore) DeleteUser(ctx context.Context, id uuid.UUID) error
 
 func (s *UsersPostgresStore) createUserInvitation(ctx context.Context, tx *sql.Tx, token string, exp time.Duration, userID uuid.UUID) error {
 	query := `
-INSERT INTO user_invitations (token, id, expiry)
-VALUES ($1, $2, $3)
-`
+		INSERT INTO user_invitations (token, id, expiry)
+		VALUES ($1, $2, $3)
+		`
 	ctx, cancel := context.WithTimeout(ctx, exp)
 	defer cancel()
 
@@ -319,11 +320,11 @@ VALUES ($1, $2, $3)
 
 func (s *UsersPostgresStore) getUserFromInvitation(ctx context.Context, tx *sql.Tx, token string) (*User, error) {
 	query := `
-SELECT u.id, u.username, u.email, u.created_at, u.is_active
-FROM users u 
-JOIN user_invitations ui ON u.id = ui.id
-WHERE ui.token = $1 and ui.expiry > $2`
-
+		SELECT u.id, u.username, u.email, u.created_at, u.is_active
+		FROM users u 
+		JOIN user_invitations ui ON u.id = ui.id
+		WHERE ui.token = $1 and ui.expiry > $2
+		`
 	//Token is stored as hash in DB, is sent in plain text by user, hence, encoding is needed
 	hash := sha256.Sum256([]byte(token))
 	hashToken := hex.EncodeToString(hash[:])

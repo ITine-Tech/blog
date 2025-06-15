@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"berta2/internal/auth"
-	"berta2/docs"
-	store2 "berta2/internal/store"
+	"github.com/ITine-Tech/blog/docs"
+	"github.com/ITine-Tech/blog/internal/auth"
+	store2 "github.com/ITine-Tech/blog/internal/store"
 	httpSwagger "github.com/swaggo/http-swagger"
 
 	"github.com/go-chi/chi/middleware"

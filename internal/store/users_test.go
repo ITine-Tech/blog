@@ -3,8 +3,9 @@ package store
 import (
 	"context"
 	"database/sql"
-	"github.com/google/uuid"
 	"testing"
+
+	"github.com/google/uuid"
 )
 
 func TestUsersPostgresStore_Activate(t *testing.T) {

@@ -1,6 +1,6 @@
 basePath: /
 definitions:
-  cmd_main.UpdatePostPayload:
+  cmd_api.UpdatePostPayload:
     properties:
       text:
         type: string
@@ -350,7 +350,7 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/cmd_main.UpdatePostPayload'
+          $ref: '#/definitions/cmd_api.UpdatePostPayload'
       produces:
       - application/json
       responses:

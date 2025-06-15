@@ -1,14 +1,16 @@
 package main
 
 import (
-	"berta2/internal/store"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/google/uuid"
 	"net/http"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
+
+	"github.com/ITine-Tech/blog/internal/store"
 )
 
 type RegisterUserPayload struct {

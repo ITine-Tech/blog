@@ -1,14 +1,15 @@
 package main
 
 import (
-	"berta2/internal/store"
 	"context"
 	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
 
-	_ "berta2/docs"
+	"github.com/ITine-Tech/blog/internal/store"
+
+	_ "github.com/ITine-Tech/blog/docs"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -22,8 +23,8 @@ type CreatePost struct {
 	Tags  []string `json:"tags"`
 }
 
-// The data types need to be pointers in order to really update. 
-// If there wasn't a pointer, it wouldn't be possible to update the text to an empty string, 
+// The data types need to be pointers in order to really update.
+// If there wasn't a pointer, it wouldn't be possible to update the text to an empty string,
 // because that would be interpreted as no changes
 type UpdatePostPayload struct {
 	Title *string `json:"title" //validate:"omitempty,max=100"`
@@ -172,7 +173,7 @@ func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	//Managing concurrency: Be aware of data race (two people updating one post at the exact same time, 
+	//Managing concurrency: Be aware of data race (two people updating one post at the exact same time,
 	//leading to unforseeable behavior in the DB because of miliseconds time difference)
 	//That's why versioning is important! --> Optimistic concurrency control
 

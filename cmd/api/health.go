@@ -1,9 +1,10 @@
 package main
 
 import (
-	_ "berta2/docs"
 	"net/http"
 	"time"
+
+	_ "github.com/ITine-Tech/blog/docs"
 )
 
 // healthcheck godoc

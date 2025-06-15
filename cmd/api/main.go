@@ -5,10 +5,10 @@ import (
 	"os"
 	"time"
 
-	"berta2/internal/auth"
-	"berta2/internal/db"
-	_ "berta2/docs"
-	"berta2/internal/store"
+	_ "github.com/ITine-Tech/blog/docs"
+	"github.com/ITine-Tech/blog/internal/auth"
+	"github.com/ITine-Tech/blog/internal/db"
+	"github.com/ITine-Tech/blog/internal/store"
 
 	"github.com/joho/godotenv"
 )
@@ -31,10 +31,13 @@ const version = "0.0.1"
 // @name						Authorization
 // @description
 func main() {
-	godotenv.Load()
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Println("Warning: .env file not found or could not be loaded")
+	}
 	cfg := config{
 		addr:   os.Getenv("LOCALHOST_ADDR"),
-		apiURL: os.Getenv(" API_URL"),
+		apiURL: os.Getenv("API_URL"),
 		db: dbConfig{
 			addr:         os.Getenv("DB_CONN_STRING"),
 			maxOpenConns: 30, //This can all be done in the ENV (Chapter 19, 3:35)

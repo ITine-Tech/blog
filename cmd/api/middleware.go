@@ -1,14 +1,15 @@
 package main
 
 import (
-	"berta2/internal/store"
 	"context"
 	"encoding/base64"
 	"errors"
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/google/uuid"
 	"net/http"
 	"strings"
+
+	"github.com/ITine-Tech/blog/internal/store"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 func (app *application) basicAuthMiddleware() func(http.Handler) http.Handler {

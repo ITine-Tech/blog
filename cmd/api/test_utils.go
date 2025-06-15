@@ -1,8 +1,8 @@
 package main
 
 import (
-	"berta2/internal/auth"
-	"berta2/internal/store"
+	"github.com/ITine-Tech/blog/internal/auth"
+	"github.com/ITine-Tech/blog/internal/store"
 	"net/http"
 	"net/http/httptest"
 	"testing"

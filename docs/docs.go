@@ -366,7 +366,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/cmd_main.UpdatePostPayload"
+                            "$ref": "#/definitions/cmd_api.UpdatePostPayload"
                         }
                     }
                 ],
@@ -602,7 +602,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "cmd_main.UpdatePostPayload": {
+        "cmd_api.UpdatePostPayload": {
             "type": "object",
             "properties": {
                 "text": {

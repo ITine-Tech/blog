@@ -1,13 +1,14 @@
 package main
 
 import (
-	_ "berta2/docs"
-	"berta2/internal/store"
 	"context"
 	"errors"
+	"net/http"
+
+	_ "github.com/ITine-Tech/blog/docs"
+	"github.com/ITine-Tech/blog/internal/store"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"net/http"
 )
 
 type userKey string

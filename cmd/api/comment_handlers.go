@@ -1,11 +1,12 @@
 package main
 
 import (
-	"berta2/internal/store"
 	"fmt"
-	"github.com/go-chi/chi/v5"
 	"net/http"
 	"strconv"
+
+	"github.com/ITine-Tech/blog/internal/store"
+	"github.com/go-chi/chi/v5"
 )
 
 type CreateComment struct {

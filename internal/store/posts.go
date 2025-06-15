@@ -117,7 +117,7 @@ func (s *PostsPostgreStore) GetPostByID(ctx context.Context, id int64) (*Post, e
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
 			return nil, ErrNotFound
-		default:	
+		default:
 			return nil, err
 		}
 	}

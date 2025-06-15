@@ -4,9 +4,14 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"time"
+
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
-	"time"
+)
+
+var (
+	ErrNotFound = errors.New("record not found")
 )
 
 // Posts there are multiple interfaces in this struct that all have to do with the DB
@@ -45,10 +50,6 @@ type Storage struct {
 	Comments Comments
 	Roles    Roles
 }
-
-var (
-	ErrNotFound = errors.New("record not found")
-)
 
 // NewPostgresStorage PostgresStorage is the constructor to make a concrete implementation of the Storage interface
 func NewPostgresStorage(db *sql.DB) Storage {
