@@ -130,8 +130,8 @@ func Test_MY_authTokenMiddleware(t *testing.T) {
 			token:           testToken,
 			expectedStatus:  http.StatusOK,
 			expectedError:   nil,
-			requestMethod:   "POST",
-			requestEndpoint: "/posts",
+			requestMethod:   "GET",
+			requestEndpoint: "/users",
 			authHeader:      "Bearer " + testToken,
 		},
 		{
@@ -139,8 +139,8 @@ func Test_MY_authTokenMiddleware(t *testing.T) {
 			token:           "",
 			expectedStatus:  http.StatusUnauthorized,
 			expectedError:   errors.New("missing Authorization header"),
-			requestMethod:   "POST",
-			requestEndpoint: "/posts",
+			requestMethod:   "GET",
+			requestEndpoint: "/users",
 		},
 	}
 
@@ -160,7 +160,9 @@ func Test_MY_authTokenMiddleware(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			req.Header.Set("Authorization", authHeader)
+			if authHeader != "" {
+				req.Header.Set("Authorization", authHeader)
+			}
 
 			resp, err := http.DefaultClient.Do(req)
 			if err != nil {
@@ -172,7 +174,7 @@ func Test_MY_authTokenMiddleware(t *testing.T) {
 				t.Errorf("Expected status code %d, got %d", tt.expectedStatus, resp.StatusCode)
 			}
 
-			if tt.expectedError != nil && resp.StatusCode != http.StatusOK {
+			if tt.expectedError != nil && resp.StatusCode != http.StatusUnauthorized {
 				t.Errorf("Expected error: %v, got none", tt.expectedError)
 			}
 		})
@@ -194,7 +196,7 @@ func Test_AuthTokenMiddleware_ExpiredToken(t *testing.T) {
 	testServer := httptest.NewServer(mux)
 	defer testServer.Close()
 
-	req, err := http.NewRequest(http.MethodGet, testServer.URL+"/posts", nil)
+	req, err := http.NewRequest(http.MethodGet, testServer.URL+"/users", nil)
 	if err != nil {
 		t.Fatal(err)
 	}

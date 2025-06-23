@@ -18,8 +18,14 @@ var testClaims = jwt.MapClaims{
 }
 
 func (a *TestAuthenticator) GenerateToken(claims jwt.Claims) (string, error) {
+	var tokenClaims jwt.Claims
+	if claims != nil {
+		tokenClaims = claims
+	} else {
+		tokenClaims = testClaims
+	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, testClaims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenClaims)
 
 	tokenString, _ := token.SignedString([]byte(secret))
 

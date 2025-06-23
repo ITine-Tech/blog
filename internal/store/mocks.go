@@ -3,7 +3,6 @@ package store
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -23,7 +22,7 @@ func (m *MockUserStore) Create(ctx context.Context, tx *sql.Tx, u *User) error {
 }
 
 func (m *MockUserStore) GetAllUsers(context.Context) ([]*User, error) {
-	return nil, errors.New("database connection failed")
+	return []*User{}, nil
 }
 
 func (m *MockUserStore) CreateAndInvite(context.Context, *User, string, time.Duration) error {
