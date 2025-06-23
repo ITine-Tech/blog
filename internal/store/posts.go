@@ -61,9 +61,6 @@ func (s *PostsPostgreStore) GetAllPosts(ctx context.Context) ([]*Post, error) {
 
 	defer rows.Close()
 
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-	defer cancel()
-
 	var result []*Post
 
 	for rows.Next() {

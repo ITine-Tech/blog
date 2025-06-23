@@ -154,9 +154,6 @@ func (s *UsersPostgresStore) GetAllUsers(ctx context.Context) ([]*User, error) {
 	}
 	defer rows.Close()
 
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-	defer cancel()
-
 	var result []*User
 
 	for rows.Next() {
@@ -291,15 +288,14 @@ func (s *UsersPostgresStore) DeleteUser(ctx context.Context, id uuid.UUID) error
 
 	rows, err := res.RowsAffected()
 	if err != nil {
-		return err
+		return errors.New("failed to get affected rows")
 	}
+
 	if rows == 0 {
 		return ErrNotFound
 	}
 	return nil
 }
-
-//Private methods, don't need to be updated on the interface
 
 func (s *UsersPostgresStore) createUserInvitation(ctx context.Context, tx *sql.Tx, token string, exp time.Duration, userID uuid.UUID) error {
 	query := `
