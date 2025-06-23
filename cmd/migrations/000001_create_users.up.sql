@@ -8,8 +8,3 @@ CREATE TABLE  IF NOT EXISTS users (
 );
 
 
---How migrations work:
--- 1. Create a new file in the migrations directory: 
--- migrate create -seq -ext sql -dir ./migrations create_users    => creates up and down migrations
--- migrate -path=./migrations -database="postgres://postgres:mypassword@localhost/berta?sslmode=disable" up
-
